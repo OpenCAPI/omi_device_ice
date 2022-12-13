@@ -1,0 +1,8 @@
+# Xilinx output files
+/fire*
+/ice/
+/.Xil/
+usage_statistics_webtalk.*
+*.log
+# IP creation marker file
+.OMI_IPs*

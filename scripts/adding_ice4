@@ -1,0 +1,22 @@
+  // BUFFER BYPASS CONTROLLER RESETS
+  // ===================================================================================================================
+
+  // The TX buffer bypass controller helper block should be held in reset until the TX user clocking network helper
+  // block which drives it is active
+//  (* DONT_TOUCH = "TRUE" *)
+//  DLx_phy_example_reset_synchronizer reset_synchronizer_gtwiz_buffbypass_tx_reset_inst (
+//    .clk_in  (hb0_gtwiz_userclk_tx_usrclk2_int),
+//    .rst_in  (~hb0_gtwiz_userclk_tx_active_int),
+//    .rst_out (hb0_gtwiz_buffbypass_tx_reset_int)
+//  );
+
+  // The RX buffer bypass controller helper block should be held in reset until the RX user clocking network helper
+  // block which drives it is active and the TX buffer bypass sequence has completed for this loopback configuration
+//  (* DONT_TOUCH = "TRUE" *)
+//  DLx_phy_example_reset_synchronizer reset_synchronizer_gtwiz_buffbypass_rx_reset_inst (
+//    .clk_in  (hb0_gtwiz_userclk_tx_usrclk2_int),
+//    //.clk_in  (hb0_gtwiz_userclk_rx_usrclk2_int),       
+//    .rst_in  (~hb0_gtwiz_userclk_rx_active_int || ~hb0_gtwiz_buffbypass_tx_done_int),
+//    .rst_out (hb0_gtwiz_buffbypass_rx_reset_int)
+//  );
+

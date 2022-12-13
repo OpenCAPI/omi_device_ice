@@ -1,0 +1,31 @@
+   ,.rxgearboxslip_in                        (rxgearboxslip_int)
+   ,.rxpolarity_in                           (rxpolarity_int)                                                                                          
+   ,.txheader_in                             (txheader_int)
+   ,.txsequence_in                           (txsequence_int)
+   ,.rxdatavalid_out                         (rxdatavalid_int) 
+   ,.rxheader_out                            (rxheader_int)
+   ,.rxheadervalid_out                       (rxheadervalid_int)
+   ,.rxpmaresetdone_out                      (rxpmaresetdone_int)
+   ,.rxstartofseq_out                        (rxstartofseq_int)
+   ,.txpmaresetdone_out                      (txpmaresetdone_int)
+   //,.txprgdivresetdone_out                   (txprgdivresetdone_int)
+   //,.rxbufstatus_                            (outrxbufstatus_out)
+   //,.rxbufreset_in                           (rxbufreset_in) 
+   
+   
+   ,.drpaddr_in                              (drpaddr_in)
+   ,.drpclk_in                               (drpclk_in)
+   ,.drpdi_in                                (drpdi_in)
+   ,.drpen_in                                (drpen_in)
+   ,.drpwe_in                                (drpwe_in)
+   ,.eyescanreset_in                         (eyescanreset_in)
+   ,.rxlpmen_in                              (rxlpmen_in)
+   ,.rxrate_in                               (rxrate_in)
+   ,.txdiffctrl_in                           (txdiffctrl_in)
+   ,.txpostcursor_in                         (txpostcursor_in)
+   ,.txprecursor_in                          (txprecursor_in)
+   ,.drpdo_out                               (drpdo_out)
+   ,.drprdy_out                              (drprdy_out)
+  );
+
+

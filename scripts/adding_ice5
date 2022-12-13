@@ -1,0 +1,215 @@
+ // Synchronize gtwiz_buffbypass_tx_done into the free-running clock domain for VIO usage
+  //wire [0:0] gtwiz_buffbypass_tx_done_vio_sync;
+
+  (* DONT_TOUCH = "TRUE" *)
+  DLx_phy_example_bit_synchronizer bit_synchronizer_vio_gtwiz_buffbypass_tx_done_0_inst (
+    .clk_in (hb_gtwiz_reset_clk_freerun_buf_int),
+    .i_in   (gtwiz_reset_tx_done_int[0]),
+    .o_out  (gtwiz_buffbypass_tx_done_vio_sync[0])
+  );
+
+  // Synchronize gtwiz_buffbypass_rx_done into the free-running clock domain for VIO usage
+  //wire [0:0] gtwiz_buffbypass_rx_done_vio_sync;
+
+  (* DONT_TOUCH = "TRUE" *)
+  DLx_phy_example_bit_synchronizer bit_synchronizer_vio_gtwiz_buffbypass_rx_done_0_inst (
+    .clk_in (hb_gtwiz_reset_clk_freerun_buf_int),
+    .i_in   (gtwiz_reset_rx_done_int[0]),
+    .o_out  (gtwiz_buffbypass_rx_done_vio_sync[0])
+  );
+
+  // Synchronize gtwiz_buffbypass_tx_error into the free-running clock domain for VIO usage
+  //wire [0:0] gtwiz_buffbypass_tx_error_vio_sync;
+
+  (* DONT_TOUCH = "TRUE" *)
+  DLx_phy_example_bit_synchronizer bit_synchronizer_vio_gtwiz_buffbypass_tx_error_0_inst (
+    .clk_in (hb_gtwiz_reset_clk_freerun_buf_int),
+    //.i_in   (gtwiz_buffbypass_tx_error_int[0]),
+    .i_in   (1'b0),    
+    .o_out  (gtwiz_buffbypass_tx_error_vio_sync[0])
+  );
+
+  // Synchronize gtwiz_buffbypass_rx_error into the free-running clock domain for VIO usage
+  //wire [0:0] gtwiz_buffbypass_rx_error_vio_sync;
+
+  (* DONT_TOUCH = "TRUE" *)
+  DLx_phy_example_bit_synchronizer bit_synchronizer_vio_gtwiz_buffbypass_rx_error_0_inst (
+    .clk_in (hb_gtwiz_reset_clk_freerun_buf_int),
+   // .i_in   (gtwiz_buffbypass_rx_error_int[0]),
+    .i_in   (1'b0),    
+    .o_out  (gtwiz_buffbypass_rx_error_vio_sync[0])
+  );
+  
+  
+  // --@ Joshua Andersen 09/06/2016  Initial interface DLx to transceiver
+  // ===================================================================================================================
+  // DLx INSTANCE
+  // ===================================================================================================================
+  wire gtwiz_userclk_tx_usrclk3_int;
+  assign tx_clk_402MHz = gtwiz_userclk_tx_usrclk2_int; // Clock is used by DLx and DLx drivers
+  assign tx_clk_201MHz = gtwiz_userclk_tx_usrclk3_int; // Clock is used by DLx and DLx drivers
+//  wire   gnd;
+//  wire   vdn;
+//  assign gnd = 1'b0;
+//  assign vdn = 1'b1;
+  
+  
+  wire [1:0] dlx_l0_tx_header_int;
+  wire [1:0] dlx_l1_tx_header_int;
+  wire [1:0] dlx_l2_tx_header_int;
+  wire [1:0] dlx_l3_tx_header_int;
+  wire [1:0] dlx_l4_tx_header_int;
+  wire [1:0] dlx_l5_tx_header_int;
+  wire [1:0] dlx_l6_tx_header_int;
+  wire [1:0] dlx_l7_tx_header_int;
+
+  assign ch0_txheader_int = {4'b0000, dlx_l0_tx_header_int};
+  assign ch1_txheader_int = {4'b0000, dlx_l1_tx_header_int};
+  assign ch2_txheader_int = {4'b0000, dlx_l2_tx_header_int};
+  assign ch3_txheader_int = {4'b0000, dlx_l3_tx_header_int};
+  assign ch4_txheader_int = {4'b0000, dlx_l4_tx_header_int};
+  assign ch5_txheader_int = {4'b0000, dlx_l5_tx_header_int};
+  assign ch6_txheader_int = {4'b0000, dlx_l6_tx_header_int};
+  assign ch7_txheader_int = {4'b0000, dlx_l7_tx_header_int};
+  
+  wire [5:0] dlx_l0_tx_seq;
+  wire [5:0] dlx_l1_tx_seq;
+  wire [5:0] dlx_l2_tx_seq;
+  wire [5:0] dlx_l3_tx_seq;
+  wire [5:0] dlx_l4_tx_seq;
+  wire [5:0] dlx_l5_tx_seq;
+  wire [5:0] dlx_l6_tx_seq;
+  wire [5:0] dlx_l7_tx_seq;
+  
+  
+  assign ch0_txsequence_int = {1'b0, dlx_l0_tx_seq};
+  assign ch1_txsequence_int = {1'b0, dlx_l1_tx_seq};
+  assign ch2_txsequence_int = {1'b0, dlx_l2_tx_seq};
+  assign ch3_txsequence_int = {1'b0, dlx_l3_tx_seq};
+  assign ch4_txsequence_int = {1'b0, dlx_l4_tx_seq};
+  assign ch5_txsequence_int = {1'b0, dlx_l5_tx_seq};
+  assign ch6_txsequence_int = {1'b0, dlx_l6_tx_seq};
+  assign ch7_txsequence_int = {1'b0, dlx_l7_tx_seq};
+  
+ // wire [23:0] rxbufstatus_out;
+ // wire [7:0]  rxbufreset_in;  
+ // assign  rxbufreset_in =8'b00000000;
+  
+  
+  
+  ocx_dlx_top #(.GEMINI_NOT_APOLLO(GEMINI_NOT_APOLLO)) ocx_dlx_top_inst (
+    // ----------------------
+    // -- RX interface
+    // ----------------------
+    // -- interface to TLx
+     .dlx_tlx_flit_valid      (dlx_tlx_flit_valid)               // --  > output            
+    ,.dlx_tlx_flit            (dlx_tlx_flit)                     // --  > output [511:0]    
+    ,.dlx_reset               (dlx_reset)
+    ,.dlx_tlx_flit_crc_err    (dlx_tlx_flit_crc_err)             // --  > output           
+    ,.dlx_tlx_link_up         (dlx_tlx_link_up)                  // --  > output            
+    ,.dlx_config_info         (dlx_config_info)                  // --  > output
+    ,.ro_dlx_version          (ro_dlx_version[31:0])             // --  > output [31:0]
+    ,.ln0_rx_valid            (ch0_rxdatavalid_int[0])          // --  < input ch0_rxdatavalid_int originally 2 bits
+    ,.ln1_rx_valid            (ch1_rxdatavalid_int[0])          // --  < input ch1_rxdatavalid_int originally 2 bits
+    ,.ln2_rx_valid            (ch2_rxdatavalid_int[0])          // --  < input ch2_rxdatavalid_int originally 2 bits
+    ,.ln3_rx_valid            (ch3_rxdatavalid_int[0])          // --  < input ch3_rxdatavalid_int originally 2 bits
+    ,.ln4_rx_valid            (ch4_rxdatavalid_int[0])          // --  < input ch4_rxdatavalid_int originally 2 bits
+    ,.ln5_rx_valid            (ch5_rxdatavalid_int[0])          // --  < input ch5_rxdatavalid_int originally 2 bits
+    ,.ln6_rx_valid            (ch6_rxdatavalid_int[0])          // --  < input ch6_rxdatavalid_int originally 2 bits
+    ,.ln7_rx_valid            (ch7_rxdatavalid_int[0])          // --  < input ch7_rxdatavalid_int originally 2 bits
+    ,.ln0_rx_header           (ch0_rxheader_int[1:0])            // --  < input [1:0] ch0_rxheader_int originally 6 bits                             
+    ,.ln1_rx_header           (ch1_rxheader_int[1:0])            // --  < input [1:0] ch1_rxheader_int originally 6 bits                              
+    ,.ln2_rx_header           (ch2_rxheader_int[1:0])            // --  < input [1:0] ch2_rxheader_int originally 6 bits                              
+    ,.ln3_rx_header           (ch3_rxheader_int[1:0])            // --  < input [1:0] ch3_rxheader_int originally 6 bits                              
+    ,.ln4_rx_header           (ch4_rxheader_int[1:0])            // --  < input [1:0] ch4_rxheader_int originally 6 bits                              
+    ,.ln5_rx_header           (ch5_rxheader_int[1:0])            // --  < input [1:0] ch5_rxheader_int originally 6 bits                              
+    ,.ln6_rx_header           (ch6_rxheader_int[1:0])            // --  < input [1:0] ch6_rxheader_int originally 6 bits                              
+    ,.ln7_rx_header           (ch7_rxheader_int[1:0])            // --  < input [1:0] ch7_rxheader_int originally 6 bits                              
+    ,.ln0_rx_data             (hb0_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln1_rx_data             (hb1_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln2_rx_data             (hb2_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln3_rx_data             (hb3_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln4_rx_data             (hb4_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln5_rx_data             (hb5_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln6_rx_data             (hb6_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln7_rx_data             (hb7_gtwiz_userdata_rx_int)        // --  < input  [63:0]                               
+    ,.ln0_rx_slip             (ch0_rxgearboxslip_int)            // --  < output                               
+    ,.ln1_rx_slip             (ch1_rxgearboxslip_int)            // --  < output                               
+    ,.ln2_rx_slip             (ch2_rxgearboxslip_int)            // --  < output                               
+    ,.ln3_rx_slip             (ch3_rxgearboxslip_int)            // --  < output                               
+    ,.ln4_rx_slip             (ch4_rxgearboxslip_int)            // --  < output                               
+    ,.ln5_rx_slip             (ch5_rxgearboxslip_int)            // --  < output                               
+    ,.ln6_rx_slip             (ch6_rxgearboxslip_int)            // --  < output                               
+    ,.ln7_rx_slip             (ch7_rxgearboxslip_int)            // --  < output                                                      
+    
+    // ----------------------                          
+    // -- TX interface
+    // ----------------------                          
+    // -- tlx interface
+    ,.dlx_tlx_init_flit_depth (dlx_tlx_init_flit_depth)          // --  > output [2:0]            
+    ,.dlx_tlx_flit_credit     (dlx_tlx_flit_credit)              // --  > output             
+    ,.tlx_dlx_flit_valid      (tlx_dlx_flit_valid)               // --  < input             
+    ,.tlx_dlx_flit            (tlx_dlx_flit)                     // --  < input  [511:0]    
+    
+    // -- Phy interface
+    ,.dlx_l0_tx_data          (hb0_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l1_tx_data          (hb1_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l2_tx_data          (hb2_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l3_tx_data          (hb3_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l4_tx_data          (hb4_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l5_tx_data          (hb5_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l6_tx_data          (hb6_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l7_tx_data          (hb7_gtwiz_userdata_tx_int)        // --  > output [63:0]     
+    ,.dlx_l0_tx_header        (dlx_l0_tx_header_int)             // --  > output [1:0] ch0_txheader_int originally 6 bits
+    ,.dlx_l1_tx_header        (dlx_l1_tx_header_int)             // --  > output [1:0] ch1_txheader_int originally 6 bits
+    ,.dlx_l2_tx_header        (dlx_l2_tx_header_int)             // --  > output [1:0] ch2_txheader_int originally 6 bits
+    ,.dlx_l3_tx_header        (dlx_l3_tx_header_int)             // --  > output [1:0] ch3_txheader_int originally 6 bits
+    ,.dlx_l4_tx_header        (dlx_l4_tx_header_int)             // --  > output [1:0] ch4_txheader_int originally 6 bits
+    ,.dlx_l5_tx_header        (dlx_l5_tx_header_int)             // --  > output [1:0] ch5_txheader_int originally 6 bits
+    ,.dlx_l6_tx_header        (dlx_l6_tx_header_int)             // --  > output [1:0] ch6_txheader_int originally 6 bits
+    ,.dlx_l7_tx_header        (dlx_l7_tx_header_int)             // --  > output [1:0] ch7_txheader_int originally 6 bits
+    ,.dlx_l0_tx_seq           (dlx_l0_tx_seq)                    // --  > output [5:0] ch0_tx_sequence_int originally 7 bits
+    ,.dlx_l1_tx_seq           (dlx_l1_tx_seq)                    // --  > output [5:0] ch1_tx_sequence_int originally 7 bits
+    ,.dlx_l2_tx_seq           (dlx_l2_tx_seq)                    // --  > output [5:0] ch2_tx_sequence_int originally 7 bits
+    ,.dlx_l3_tx_seq           (dlx_l3_tx_seq)                    // --  > output [5:0] ch3_tx_sequence_int originally 7 bits
+    ,.dlx_l4_tx_seq           (dlx_l4_tx_seq)                    // --  > output [5:0] ch4_tx_sequence_int originally 7 bits
+    ,.dlx_l5_tx_seq           (dlx_l5_tx_seq)                    // --  > output [5:0] ch5_tx_sequence_int originally 7 bits
+    ,.dlx_l6_tx_seq           (dlx_l6_tx_seq)                    // --  > output [5:0] ch6_tx_sequence_int originally 7 bits
+    ,.dlx_l7_tx_seq           (dlx_l7_tx_seq)                    // --  > output [5:0] ch7_tx_sequence_int originally 7 bits
+    ,.tlx_dlx_debug_encode    (tlx_dlx_debug_encode)             // --  < input [3:0]
+    ,.tlx_dlx_debug_info      (tlx_dlx_debug_info)               // --  < input [31:0]                       
+    ,.opt_gckn                (gtwiz_userclk_tx_usrclk2_int)     // --  < input                                         
+//    ,.reg_val                 (32'h00000000)     // --  < input                                         
+    ,.reg_04_val                (reg_04_val)   
+    ,.reg_04_hwwe               (reg_04_hwwe)  
+    ,.reg_04_update             (reg_04_update)    								 
+    ,.reg_05_hwwe               (reg_05_hwwe)  
+    ,.reg_05_update             (reg_05_update)
+    ,.reg_06_hwwe               (reg_06_hwwe)  
+    ,.reg_06_update             (reg_06_update)
+    ,.reg_07_hwwe               (reg_07_hwwe)  
+    ,.reg_07_update             (reg_07_update)
+    ,.tsm_state2_to_3         (tsm_state2_to_3)
+    ,.tsm_state4_to_5         (tsm_state4_to_5)
+    ,.tsm_state6_to_1         (tsm_state6_to_1)
+    
+//    ,.gnd                     (gnd)                              // -- <> inout             
+//    ,.vdn                     (vdn)                              // -- <> inout        
+    ,.ocde                    (ocde)                             // -- < input
+    // -- Josh Andersen added
+    ,.clk_156_25MHz                (hb_gtwiz_reset_clk_freerun_buf_int) // --  < input
+    ,.gtwiz_reset_all_out          (hb_gtwiz_reset_all_DLx_reset)       // --  > output
+    ,.hb_gtwiz_reset_all_in        (hb_gtwiz_reset_all_int)             // --  > input 
+    ,.gtwiz_reset_tx_done_in       (gtwiz_reset_tx_done_int)            // --  < input
+    ,.gtwiz_reset_rx_done_in       (gtwiz_reset_rx_done_int)            // --  < input
+    ,.gtwiz_buffbypass_tx_done_in  (gtwiz_reset_tx_done_int)            // --  < input
+    ,.gtwiz_buffbypass_rx_done_in  (gtwiz_reset_rx_done_int)            // --  < input
+    ,.gtwiz_userclk_tx_active_in   (gtwiz_userclk_tx_active_int)        // --  < input
+    ,.gtwiz_userclk_rx_active_in   (gtwiz_userclk_rx_active_int)        // --  < input
+    ,.send_first                   (send_first)                         // --  < input
+    ,.gtwiz_reset_rx_datapath_out  (hb_gtwiz_reset_rx_datapath_DLx_int) // --  > output
+  );
+  // ===================================================================================================================
+  // TRANSCEIVER WRAPPER INSTANCE
+  // ===================================================================================================================
+  

@@ -1,0 +1,22 @@
+
+  //--------------------------------------------------------------------------------------------------------------------
+  wire [0:0] gtwiz_buffbypass_rx_reset_int;
+  wire [0:0] hb0_gtwiz_buffbypass_rx_reset_int;
+  assign gtwiz_buffbypass_rx_reset_int[0:0] = hb0_gtwiz_buffbypass_rx_reset_int;
+
+  //--------------------------------------------------------------------------------------------------------------------
+  wire [0:0] gtwiz_buffbypass_rx_start_user_int;
+  wire [0:0] hb0_gtwiz_buffbypass_rx_start_user_int = 1'b0;
+  assign gtwiz_buffbypass_rx_start_user_int[0:0] = hb0_gtwiz_buffbypass_rx_start_user_int;
+
+  //--------------------------------------------------------------------------------------------------------------------
+  wire [0:0] gtwiz_buffbypass_rx_done_int;
+  wire [0:0] hb0_gtwiz_buffbypass_rx_done_int;
+  assign hb0_gtwiz_buffbypass_rx_done_int = gtwiz_buffbypass_rx_done_int[0:0];
+
+  //--------------------------------------------------------------------------------------------------------------------
+  wire [0:0] gtwiz_buffbypass_rx_error_int;
+  wire [0:0] hb0_gtwiz_buffbypass_rx_error_int;
+  assign hb0_gtwiz_buffbypass_rx_error_int = gtwiz_buffbypass_rx_error_int[0:0];
+
+

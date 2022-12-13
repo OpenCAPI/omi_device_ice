@@ -1,0 +1,58 @@
+  */
+  assign rxusrclk_int  = {8{1'b0}};
+  assign rxusrclk2_int = {8{1'b0}};
+  assign gtwiz_userclk_rx_active_out = gtwiz_userclk_tx_active_int;
+  // -------------------------------------------------------------------------------------------------------------------
+  // Transmitter buffer bypass controller helper block
+  // -------------------------------------------------------------------------------------------------------------------
+  wire gtwiz_buffbypass_tx_resetdone_int;
+
+  assign gtwiz_buffbypass_tx_resetdone_int = gtwiz_reset_tx_done_out;
+
+  wire gtwiz_buffbypass_rx_resetdone_int;
+
+  assign gtwiz_buffbypass_rx_resetdone_int = gtwiz_reset_rx_done_out;
+
+  wire [7:0] txphaligndone_int;
+  wire [7:0] txphinitdone_int;
+  wire [7:0] txdlysresetdone_int;
+  wire [7:0] txsyncout_int;
+  wire [7:0] txsyncdone_int;
+  wire [7:0] txphdlyreset_int;
+  wire [7:0] txphalign_int;
+  wire [7:0] txphalignen_int;
+  wire [7:0] txphdlypd_int;
+  wire [7:0] txphinit_int;
+  wire [7:0] txphovrden_int;
+  wire [7:0] txdlysreset_int;
+  wire [7:0] txdlybypass_int;
+  wire [7:0] txdlyen_int;
+  wire [7:0] txdlyovrden_int;
+  wire [7:0] txphdlytstclk_int;
+  wire [7:0] txdlyhold_int;
+  wire [7:0] txdlyupdown_int;
+  wire [7:0] txsyncmode_int;
+  wire [7:0] txsyncallin_int;
+  wire [7:0] txsyncin_int;
+
+  wire [7:0] rxphaligndone_int;
+  wire [7:0] rxdlysresetdone_int;
+  wire [7:0] rxsyncout_int;
+  wire [7:0] rxsyncdone_int;
+  wire [7:0] rxphdlyreset_int;
+  wire [7:0] rxphalign_int;
+  wire [7:0] rxphalignen_int;
+  wire [7:0] rxphdlypd_int;
+  wire [7:0] rxphovrden_int;
+  wire [7:0] rxdlysreset_int;
+  wire [7:0] rxdlybypass_int;
+  wire [7:0] rxdlyen_int;
+  wire [7:0] rxdlyovrden_int;
+  wire [7:0] rxsyncmode_int;
+  wire [7:0] rxsyncallin_int;
+  wire [7:0] rxsyncin_int;
+
+
+
+  wire [7:0] gtpowergood_out;
+  wire [7:0] txprgdivresetdone_out;

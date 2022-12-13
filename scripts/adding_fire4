@@ -1,0 +1,6 @@
+
+  DLx_phy_example_bit_synchronizer bit_synchronizer_vio_gtwiz_buffbypass_rx_done_0_inst (
+    .clk_in (hb_gtwiz_reset_clk_freerun_buf_int),
+    .i_in   (gtwiz_reset_rx_done_int[0]),
+    .o_out  (gtwiz_buffbypass_rx_done_vio_sync[0])
+  );

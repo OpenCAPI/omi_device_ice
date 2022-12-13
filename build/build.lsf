@@ -1,0 +1,12 @@
+        #BSUB -q normal         # Queue (see `bqueues` or `bqueues -l queueName`)
+        #BSUB -G ocmb           # Group (see `bugroup`)
+        #BSUB -P ocmb           # Project
+
+        #BSUB -n 1              # set the number of cpus this job will need
+        #BSUB -M 4              # set the memory in GB this job will need.
+
+        # Start on any X86_64 processor architecture machine.
+        #BSUB -R "select[type==X86_64]"
+
+        # Execute $CMD from env
+        $CMD
