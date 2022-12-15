@@ -1,0 +1,58 @@
+   // Output of IO Differential Buffer
+   wire freerun_clk; // 300 MHz
+   assign freerun_clk_out = freerun_clk; //LIF added for i2c clock
+//--LIF 4/17`define DLX_FREERUN_BUFG_GT
+`ifdef DLX_FREERUN_BUFG_GT
+
+  // 250Mhz on bermuda
+  IBUFDS_GTE4 #(
+    .REFCLK_HROW_CK_SEL(2'b00)  // ODIV2 = O
+  ) u_refclk (
+    .I     (freerun_clk_p),
+    .IB    (freerun_clk_n),
+    .CEB   (1'b0),
+    .O     (),
+    .ODIV2 (freerun_clk)
+  );
+ 
+  
+  // INIT_CLK = GT_REFCLK / 2
+  BUFG_GT u_init_clk (
+    .CE      (1'b1),
+    .CEMASK  (1'b0),
+    .CLR     (1'b0),
+    .CLRMASK (1'b0),
+    .DIV     (3'd1),
+    .I       (freerun_clk),
+    .O       (hb_gtwiz_reset_clk_freerun_buf_int)
+  );
+
+`else
+   // BUFGCE_DIV: General Clock Buffer with Divide Function
+   //             Virtex UltraScale+
+   // Xilinx HDL Language Template, version 2017.1
+   BUFGCE_DIV #(
+      .BUFGCE_DIVIDE(2),      // 1-8
+      // Programmable Inversion Attributes: Specifies built-in programmable inversion on specific pins
+      .IS_CE_INVERTED(1'b0),  // Optional inversion for CE
+      .IS_CLR_INVERTED(1'b0), // Optional inversion for CLR
+      .IS_I_INVERTED(1'b0)    // Optional inversion for I
+   )
+   BUFGCE_DIV_inst (
+      .O   (hb_gtwiz_reset_clk_freerun_buf_int), // 1-bit output: Buffer
+      .CE  (1'b1),                               // 1-bit input: Buffer enable
+      .CLR (1'b0),                               // 1-bit input: Asynchronous clear
+      .I   (freerun_clk)                         // 1-bit input: Buffer
+   );
+
+
+
+   IBUFDS #(
+      .DQS_BIAS("FALSE") // (FALSE, TRUE)
+   )
+   IBUFDS_freerun (
+      .O  (freerun_clk),   // 1-bit output: Buffer output
+      .I  (freerun_clk_p), // 1-bit input: Diff_p buffer input (connect directly to top-level port)
+      .IB (freerun_clk_n)  // 1-bit input: Diff_n buffer input (connect directly to top-level port)
+   );
+`endif

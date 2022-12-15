@@ -1,0 +1,31 @@
+  assign cclk = gtwiz_userclk_tx_usrclk2_int;
+  assign rclk = hb_gtwiz_reset_clk_freerun_buf_int;
+
+  // DLx INSTANCE
+  // ===================================================================================================================
+  wire gtwiz_userclk_tx_usrclk3_int;
+  //wire tx_clk_402MHz;
+  wire tx_clk_201MHz;
+  assign tx_clk_402MHz = gtwiz_userclk_tx_usrclk2_int; // Clock is used by DLx and DLx drivers
+  assign tx_clk_201MHz = gtwiz_userclk_tx_usrclk3_int; // Clock is used by DLx and DLx drivers
+
+  assign opt_gckn = gtwiz_userclk_tx_usrclk2_int;
+  assign clk_156_25MHz = hb_gtwiz_reset_clk_freerun_buf_int;
+//  wire   gnd;
+//  wire   vdn;
+//  assign gnd = 1'b0;
+//  assign vdn = 1'b1;
+  
+ // wire [23:0] rxbufstatus_out;
+ // wire [7:0]  rxbufreset_in;  
+ // assign  rxbufreset_in =8'b00000000;
+  
+  assign gtwiz_userclk_rx_active_in = gtwiz_userclk_rx_active_int;
+  assign gtwiz_userclk_tx_active_in = gtwiz_userclk_tx_active_int;
+  assign hb_gtwiz_reset_all_DLx_reset = gtwiz_reset_all_out;
+  assign hb_gtwiz_reset_rx_datapath_DLx_int = gtwiz_reset_rx_datapath_out;
+  assign gtwiz_reset_rx_done_in = gtwiz_reset_rx_done_int;
+  assign gtwiz_reset_tx_done_in = gtwiz_reset_tx_done_int;
+  assign gtwiz_buffbypass_rx_done_in = gtwiz_reset_rx_done_int;
+  assign gtwiz_buffbypass_tx_done_in = gtwiz_buffbypass_tx_done_int;
+  assign hb_gtwiz_reset_all_in = hb_gtwiz_reset_all_int;

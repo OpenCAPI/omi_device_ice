@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+##
+## Copyright 2022 International Business Machines
+##
+## Licensed under the Apache License, Version 2.0 (the "License");
+## you may not use this file except in compliance with the License.
+## You may obtain a copy of the License at
+## http://www.apache.org/licenses/LICENSE-2.0
+##
+## The patent license granted to you in Section 3 of the License, as applied
+## to the "Work," hereby includes implementations of the Work in physical form.
+##
+## Unless required by applicable law or agreed to in writing, the reference design
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+##
+## The background Specification upon which this is based is managed by and available from
+## the OpenCAPI Consortium.  More information can be found at https://opencapi.org.
+##
+set -eu
+
+usage() {
+    echo "Need to provide design and script to pass to vivado"
+    echo $0 "<fire || ice> <script_name> <script_args>"
+    exit 1
+}
+
+if [[ $# -lt 2 ]] ; then
+    usage
+fi
+
+# By default we were using 2018.3 but now process has been updated and tested with 2021.2
+# Some chips might be stuck on an older version, so override if needed.
+#XILINX_VERSION=2018.2
+#XILINX_VERSION=2018.3.1
+XILINX_VERSION=2021.2
+
+#----------------------------
+# if TRACE_MODE = yes then vivado will be run in trace mode (to debug script)
+#   By default all calls to vivado have been called with "-notrace" and results are sent into _script.log
+# if DEBUG_MODE = yes then project will be created so GUI can be launched (otherwise no xpr since all is run in memory)
+#          to view the ip created you can use ./run <fire/ice> edit_ip.tcl
+export DEBUG_MODE="no"
+export TRACE_MODE="no"
+#----------------------------
+
+#----------------------------
+#-- CONFIGURATION FOR FIRE --
+#----------------------------
+if [[ "$1" == "fire" ]] ; then
+# Choose the board
+    # Choose vcu128 or apollo
+    export BOARD="vcu128"
+    # export BOARD="apollo"
+
+# Choose the frequency
+    # OMI_FREQ is set to 333 for internal logic at 333MHz and OMI links at 21.33GHz
+    # OMI_FREQ is set to 400 for internal logic at 400MHz and OMI links at 25.60GHz (still timing closure issues)
+    export OMI_FREQ="333"
+    #export OMI_FREQ="400"
+
+#----------------------------
+#-- CONFIGURATION FOR ICE  --
+#----------------------------
+elif [[ "$1" == "ice" ]] ; then
+# Choose the board
+    export BOARD="gemini"
+
+# Choose the frequency
+    # OMI_FREQ is set to 333 for internal logic at 333MHz and OMI links at 21.33GHz
+    # OMI_FREQ is set to 400 for internal logic at 400MHz and OMI links at 25.60GHz (still timing closure issues)
+    export OMI_FREQ="333"
+    #export OMI_FREQ="400"
+
+else
+    echo "First argument must be 'fire' or 'ice'; was '$1'"
+    exit 1
+fi
+
+#--------------------------
+if [[ $BOARD == "vcu128" ]] ; then
+    export XILINX_PART="xcvu37p-fsvh2892-2-e"
+    export OMI_PORTS="2"
+
+elif [[ $BOARD == "apollo" ]] ; then
+    export XILINX_PART="xcvu7p-flvc2104-2-e"
+    export OMI_PORTS="4"
+
+elif [[ $BOARD == "gemini" ]] ; then
+    export XILINX_PART="xczu19eg-ffvc1760-2-i"
+    export OMI_PORTS="1"
+
+else
+    echo " card not recognzed"
+    exit 1
+fi
+# Other defined parameters
+CWD=$(dirname $(readlink -f $0))
+export XILINX_VERSION=$XILINX_VERSION
+export DESIGN="$1"
+export TOP_LEVEL="$1""_top"
+export BRD_DIR="$CWD/../$DESIGN/src/board/$BOARD"
+export SRC_DIR="$CWD/../$DESIGN/src"
+export DLX_DIR="$CWD/../$DESIGN/src/dlx"
+export OUTPUT_PREFIX="$CWD/$DESIGN"
+#--------------------------
+
+if [[ -r $2 ]] ; then
+#    export XILINXD_LICENSE_FILE=insert_license_file_server_here
+    if ! which vivado 2>/dev/null >/dev/null; then
+        export PATH=$PATH:/afs/apd/func/vlsi/cte/tools/xilinx/$XILINX_VERSION/Vivado/$XILINX_VERSION/bin
+    fi
+    export vivado_major_release=$(vivado -nolog -nojournal -version | grep "Vivado v" | cut -d "." -f1 | tr -d "Vivado ")
+    export vivado_minor_release=$(vivado -nolog -nojournal -version | grep "Vivado v" | cut -d "." -f2 | cut -d " " -f1)
+    export vivado_release=$vivado_major_release.$vivado_minor_release
+
+    if ! vivado -nolog -nojournal -version | grep -q "Vivado v${XILINX_VERSION} (64-bit)"; then
+        echo "Vivado version ${vivado_release} detected while ${XILINX_VERSION} is recommended"
+	export XILINX_VERSION=${vivado_release}
+        #exit
+    fi
+
+    # Output to a log names after the script name and the script args,
+    # with spaces replaced by '_', to tell all the logs apart. If
+    # there are no args, delete the last _ so we don't end up with
+    # synthesize_.log
+    LOGNAME=$(echo "${2%.*} ${@:3}.log" | sed 's/ /_/g' | sed 's/_\.log/.log/g')
+    mkdir -p $OUTPUT_PREFIX
+
+    # Color code the different warning levels, and the commented
+    # commands, as we print to the screen
+    echo "Launching vivado by sourcing file $2"
+    # use following command to debug the script
+    if [[ $TRACE_MODE == "yes" ]] ; then
+      vivado -mode batch -source $2 -quiet -nolog -nojournal -tclargs ${@:3} 2>&1 | \
+        sed -ue 's/^WARNING.*$/\x1b[33m&\x1b[m/g' | \
+        sed -ue 's/^INFO.*$/\x1b[34m&\x1b[m/g' | \
+        sed -ue 's/^CRITICAL WARNING.*$/\x1b[45m&\x1b[m/g' | \
+        sed -ue 's/^#.*$/\x1b[32m&\x1b[m/g' | \
+        sed -ue 's/^ERROR.*$/\x1b[41m&\x1b[m/g' | tee $OUTPUT_PREFIX/$LOGNAME
+    else
+      vivado -mode batch -source $2 -quiet -notrace -nolog -nojournal -tclargs ${@:3} 2>&1 | \
+        sed -ue 's/^WARNING.*$/\x1b[33m&\x1b[m/g' | \
+        sed -ue 's/^INFO.*$/\x1b[34m&\x1b[m/g' | \
+        sed -ue 's/^CRITICAL WARNING.*$/\x1b[45m&\x1b[m/g' | \
+        sed -ue 's/^#.*$/\x1b[32m&\x1b[m/g' | \
+        sed -ue 's/^ERROR.*$/\x1b[41m&\x1b[m/g' | tee $OUTPUT_PREFIX/$LOGNAME
+    fi
+    # Strip color codes out of the log for reading with an editor
+    sed -i -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" $OUTPUT_PREFIX/$LOGNAME
+    echo "$2 completed"
+else
+    echo "Cannot find '$2'"
+    exit 1
+fi
