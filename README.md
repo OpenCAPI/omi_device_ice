@@ -34,7 +34,7 @@ can also be found at https://opencapi.github.io/omi-doc/
 As of today, this ICE design targets only 1 board:
 * __Gemini__ board which is a lab experimentation board (not for distribution)
     * AMD/Xilinx FPGA __XCZU19EG__
-    * 1 porte (x8 OMI links) enabled in this design
+    * 1 port (x8 OMI links) enabled in this design
 
 Any new board or additional ports can be easily added. Board specific files can be found in ~/ice/src/board/
 
