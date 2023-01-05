@@ -121,15 +121,15 @@ set vivado_minor_release [exec vivado -nolog -nojournal -version | grep "Vivado 
 set vivado_release $vivado_major_release.$vivado_minor_release
 #puts "vivado_release is $vivado_release"
 
-puts "    ======================================================"
-puts "    == CONFIGURATION parameters used to build the image =="
+puts "    ==================================================================="
+puts "    == CONFIGURATION parameters used to build the image ('run' file) =="
 puts "     Design is   : $DESIGN"
 puts "     Vivado used : $vivado_release"
 puts "     Frequency   : $OMI_FREQ MHz"
 puts "     Xilinx FPGA : $XILINX_PART"
 puts "     Debug mode  : $DEBUG_MODE"
 puts "     Trace mode  : $TRACE_MODE"
-puts "    ======================================================"
+puts "    ==================================================================="
 #puts " Is it ok to start the build process? (y/n)"
 flush stdout
 #if { [yesNoPrompt] == 1} {
@@ -224,6 +224,13 @@ read_verilog [ glob $DLX_DIR/*.v ]
 read_verilog [ glob $SRC_DIR/verilog/*.v ]
 puts "                    reading timings constraints (timing.xdc)"
 read_xdc [ glob $BRD_DIR/timing.xdc ]
+
+if {( $DEBUG_MODE == "yes")} {
+   #add pins constraints file so that it is contained in the xpr project in debug mode
+   #This file is usually added and used in implementation script
+   read_xdc [ glob $BRD_DIR/pins.xdc ]
+}
+
 ################################################################################
 # Run Synthesis & Generate Reports
 ################################################################################

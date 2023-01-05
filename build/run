@@ -40,7 +40,9 @@ XILINX_VERSION=2021.2
 #----------------------------
 # if TRACE_MODE = yes then vivado will be run in trace mode (to debug script)
 #   By default all calls to vivado have been called with "-notrace" and results are sent into _script.log
-# if DEBUG_MODE = yes then project will be created so GUI can be launched (otherwise no xpr since all is run in memory)
+# if DEBUG_MODE = yes then project and associated .xpr file will be created. 
+#   GUI can then be launched calling this .xpr file. 
+#   WARNING: GUI process doesn't follow our scripts directory architecture.
 #          to view the ip created you can use ./run <fire/ice> edit_ip.tcl
 export DEBUG_MODE="no"
 export TRACE_MODE="no"
